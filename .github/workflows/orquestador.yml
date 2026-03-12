@@ -1,0 +1,64 @@
+name: Pipeline ELT y Modelo Cuantitativo
+
+on:
+  schedule:
+    # 14:00 a 20:00 UTC equivale a 11:00 a 17:00 en Buenos Aires (Rueda BYMA)
+    - cron: '*/15 14-20 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  ejecutar-arquitectura:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v3
+
+      - name: Configurar entorno Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Instalar dependencias
+        run: |
+          pip install -r requirements.txt
+
+      - name: Crear credencial GCP temporal
+        # Inyecta el secreto de GitHub en un archivo temporal para dbt
+        run: |
+          echo '${{ secrets.GCP_SA_KEY }}' > gcp-key.json
+
+      - name: Configurar dbt profiles dinámico
+        # Crea el profiles.yml apuntando al JSON temporal
+        run: |
+          mkdir -p ~/.dbt
+          cat << EOF > ~/.dbt/profiles.yml
+          portfolio_finanzas:
+            target: dev
+            outputs:
+              dev:
+                type: bigquery
+                method: service-account
+                project: portfolio-analytics-eng
+                dataset: mercado_financiero_dev
+                threads: 4
+                location: US
+                keyfile: $(pwd)/gcp-key.json
+          EOF
+
+      - name: Ejecutar Capa de Transformación (dbt run)
+        run: |
+          cd portfolio_finanzas
+          dbt run
+
+      - name: Ejecutar Data Quality (dbt test)
+        run: |
+          cd portfolio_finanzas
+          dbt test
+
+      - name: Ejecutar Motor Cuantitativo (Python)
+        # El script de Python lee directamente la variable de entorno
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        run: |
+          python analytics/modelos_cuantitativos.py
