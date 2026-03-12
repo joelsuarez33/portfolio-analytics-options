@@ -1,11 +1,16 @@
 # Quantitative Options Terminal (GGAL)
 
-Pipeline End-to-End de Analytics Engineering enfocado en el mercado financiero argentino.
+End-to-End Analytics Engineering Pipeline focused on the Argentine financial market.
 
 ## Arquitectura Técnica
-1. **Extracción (GCP):** Cloud Functions orquestadas vía Cloud Scheduler capturan la cadena de opciones en tiempo real desde APIs financieras.
-2. **Carga (BigQuery):** Almacenamiento columnar de datos crudos (JSON).
-3. **Transformación (dbt):** Modelado dimensional, parsing con RegEx, ecuaciones de paridad Call-Put y Data Quality Testing.
-4. **Análisis (Python/Streamlit):** Modelos estocásticos aplicando Black-Scholes-Merton (BSM) y Criterio de Kelly para evaluar ventaja estadística matemática (Edge) en spreads 1:1.
+1. **Extracción (GCP):** Cloud Functions orchestrated via Cloud Scheduler to capture real-time options chains from financial APIs.
+2. **Carga (BigQuery):** Columnar storage for raw data (JSON).
+3. **Transformación (dbt):** Dimensional modeling, RegEx-based parsing, Call-Put parity equations, and Data Quality Testing.
+4. **Análisis (Python/Streamlit):** Stochastic models implementing Black-Scholes-Merton (BSM) and Kelly Criterion to evaluate mathematical edge in 1:1 spreads.
 
-Desarrollado con Python, SQL, dbt y Google Cloud Platform.
+**Tech Stack:** Python, SQL, dbt, and Google Cloud Platform (GCP).
+
+**Key features:**
+1. **Implied Volatility (IV) Calculation):** Numerical root-finding via py_vollib.
+2. **Risk Management:** Automated Kelly Criterion weighting for optimal position sizing.
+3. **Synthetic Arbitrage:** Monitoring TNA (Annual Percentage Rate) through synthetic stock positions.
