@@ -1,0 +1,30 @@
+# Entornos virtuales
+venv/
+.venv/
+env/
+.env/
+
+# Variables de entorno y credenciales
+.env
+*.json
+*credentials*.json
+*secret*.json
+
+# dbt
+.dbt/
+logs/
+target/
+dbt_packages/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Streamlit
+.streamlit/
+
+# Sistema Operativo
+.DS_Store
+Thumbs.db
