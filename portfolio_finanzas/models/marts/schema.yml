@@ -1,0 +1,30 @@
+version: 2
+
+models:
+  - name: fct_tasas_sinteticas
+    description: "Tabla de hechos que calcula el precio del activo sintético (Long Call + Short Put) usando la ecuación de paridad para opciones de GGAL."
+    columns:
+      - name: strike
+        description: "Precio de ejercicio de la opción."
+        tests:
+          - not_null
+      - name: fecha_vencimiento
+        description: "Fecha exacta de expiración del contrato."
+        tests:
+          - not_null
+      - name: dias_al_vencimiento
+        description: "Días calendario restantes hasta la expiración (DTE)."
+        tests:
+          - not_null
+      - name: precio_sintetico
+        description: "Valor calculado del sintético: Strike + Precio Call - Precio Put."
+        tests:
+          - not_null
+      - name: vol_call
+        description: "Volumen operado en la base Call."
+        tests:
+          - not_null
+      - name: vol_put
+        description: "Volumen operado en la base Put."
+        tests:
+          - not_null
