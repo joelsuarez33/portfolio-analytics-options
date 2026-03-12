@@ -7,9 +7,13 @@ from google.oauth2 import service_account
 from scipy.stats import norm
 from py_vollib.black_scholes.implied_volatility import implied_volatility
 import requests
+from dotenv import load_dotenv
 
-# Configuración inicial
-PROJECT_ID = "portfolio-analytics-eng"
+# Cargar variables de entorno locales
+load_dotenv()
+
+# Configuración inicial parametrizada
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "portfolio-analytics-eng")
 R_RISK_FREE = 0.34
 
 def obtener_spot_live():
@@ -40,9 +44,11 @@ def main():
         info = json.loads(gcp_sa_key)
         credentials = service_account.Credentials.from_service_account_info(info)
     else:
-        # Entorno Local: Fallback a la ruta absoluta
-        KEY_PATH = r"C:\Users\SUAREZJOEL(565)\py\portfolio-analytics-eng\.dbt\portfolio-analytics-eng-9acb68b83873.json"
-        credentials = service_account.Credentials.from_service_account_file(KEY_PATH)
+        # Entorno Local: Carga mediante variable de entorno
+        key_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
+        if not key_path or not os.path.exists(key_path):
+            raise FileNotFoundError("Falta la variable de entorno GOOGLE_APPLICATION_CREDENTIALS o el archivo JSON no existe.")
+        credentials = service_account.Credentials.from_service_account_file(key_path)
 
     client = bigquery.Client(credentials=credentials, project=PROJECT_ID)
     
