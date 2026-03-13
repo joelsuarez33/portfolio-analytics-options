@@ -24,7 +24,6 @@ def obtener_spot_live():
 @st.cache_data(ttl=300)
 def cargar_datos_bq():
     # En producción (Streamlit Cloud), lee de st.secrets
-    # Streamlit convierte el secreto configurado en la web a un diccionario de Python
     cred_dict = dict(st.secrets["gcp_service_account"])
     credentials = service_account.Credentials.from_service_account_info(cred_dict)
     
@@ -37,7 +36,6 @@ def cargar_datos_bq():
         FROM `{cred_dict["project_id"]}.mercado_financiero_dev.fct_opciones_latest`
         WHERE dte > 0 AND precio > 0 AND volumen > 0
     """
-    # Se asigna explícitamente a un dataframe y se retorna
     df_raw = client.query(query).to_dataframe()
     return df_raw
 
@@ -46,6 +44,16 @@ def pop_bs(spot, be, t_years, sigma, es_alcista):
     if t_years <= 0 or pd.isna(sigma) or sigma == 0: return 0
     d2 = (np.log(spot / be) + (R_RISK_FREE - (sigma**2) / 2) * t_years) / (sigma * np.sqrt(t_years))
     return norm.cdf(d2) if es_alcista else norm.cdf(-d2)
+
+def calcular_iv_segura(precio, spot, strike, t_years, tipo):
+    """Calcula la VI manejando excepciones de valor intrínseco y convergencia."""
+    if tipo not in ['c', 'p']:
+        return np.nan
+    try:
+        return implied_volatility(precio, spot, strike, t_years, R_RISK_FREE, tipo)
+    except Exception:
+        # Captura py_lets_be_rational.exceptions.BelowIntrinsicException y otros errores de convergencia
+        return np.nan
 
 def evaluar_spreads(df_opts, spot, flag, tipo_flujo, dte):
     opts = df_opts[df_opts['tipo'] == flag].sort_values('strike')
@@ -112,9 +120,9 @@ if df.empty:
     st.warning("Sin datos en la base.")
     st.stop()
 
-# Cálculo base de VI
+# Cálculo base de VI con manejo de excepciones
 df['t_years'] = df['dte'] / 365.0
-df['vi'] = df.apply(lambda r: implied_volatility(r['precio'], spot, r['strike'], r['t_years'], R_RISK_FREE, r['tipo']) if r['tipo'] in ['c','p'] else np.nan, axis=1)
+df['vi'] = df.apply(lambda r: calcular_iv_segura(r['precio'], spot, r['strike'], r['t_years'], r['tipo']), axis=1)
 
 # Estructura de pestañas
 tab1, tab2 = st.tabs(["Monitor General y Sintéticos", "Optimizador de Spreads (Kelly)"])
