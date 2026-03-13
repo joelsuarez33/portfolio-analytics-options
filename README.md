@@ -2,6 +2,8 @@
 
 End-to-End Analytics Engineering Pipeline focused on the Argentine financial market.
 
+https://portfolio-analytics-options.streamlit.app/
+
 ## Arquitectura Técnica
 1. **Extracción (GCP):** Cloud Functions orchestrated via Cloud Scheduler to capture real-time options chains from financial APIs.
 2. **Carga (BigQuery):** Columnar storage for raw data (JSON).
