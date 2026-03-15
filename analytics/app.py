@@ -104,6 +104,18 @@ def evaluar_spreads(df_opts, spot, flag, tipo_flujo, dte):
     return df_s.loc[df_s['Kelly'].idxmax()]
 
 # --- INTERFAZ UI ---
+
+# --- NUEVA SECCIÓN: SIDEBAR CON ENLACES ---
+with st.sidebar:
+    st.markdown("### Desarrollado por")
+    st.markdown("**Joel Suarez**")
+    st.markdown("Analytics Engineer | Data Architecture")
+    st.markdown("---")
+    st.markdown("[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/joel-f-suarez/)")
+    st.markdown("[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/joelsuarez33/portfolio-analytics-options)")
+    st.markdown("---")
+    st.markdown("🚀 *Pipeline E2E: Python $\\rightarrow$ GCP (BigQuery) $\\rightarrow$ dbt $\\rightarrow$ Streamlit*")
+
 st.title("📊 Terminal Analítica de Opciones GGAL")
 spot = obtener_spot_live()
 
