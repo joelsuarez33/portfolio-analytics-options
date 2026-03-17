@@ -4,7 +4,7 @@ End-to-End Analytics Engineering Pipeline focused on the Argentine financial mar
 
 https://portfolio-analytics-options.streamlit.app/
 
-## Arquitectura Técnica
+## Technical Architecture
 1. **Extracción (GCP):** Cloud Functions orchestrated via Cloud Scheduler to capture real-time options chains from financial APIs.
 2. **Carga (BigQuery):** Columnar storage for raw data (JSON).
 3. **Transformación (dbt):** Dimensional modeling, RegEx-based parsing, Call-Put parity equations, and Data Quality Testing.
