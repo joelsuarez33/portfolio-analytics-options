@@ -12,7 +12,7 @@ import requests
 st.set_page_config(page_title="Quantitative Options Terminal | GGAL", layout="wide")
 
 # Market Constants
-R_RISK_FREE = 0.34  # Risk-free rate (Approximate local TNA)
+R_RISK_FREE = 0.34  # Risk-free rate (Approximate local APR)
 
 # --- DATA INGESTION & CACHE ---
 @st.cache_data(ttl=300)
