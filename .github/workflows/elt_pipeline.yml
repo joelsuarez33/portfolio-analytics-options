@@ -1,4 +1,4 @@
-name: Pipeline ELT y Modelo Cuantitativo
+name: ELT Pipeline and Quantitative Model
 
 on:
   schedule:
@@ -6,28 +6,28 @@ on:
   workflow_dispatch:
 
 jobs:
-  ejecutar-arquitectura:
+  execute-architecture:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Descargar repositorio
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configurar entorno Python
+      - name: Setup Python environment
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11' # Actualizado para soporte a largo plazo
+          python-version: '3.11' # Updated for LTS support
           cache: 'pip'
 
-      - name: Instalar dependencias
+      - name: Install dependencies
         run: |
           pip install -r requirements.txt
 
-      - name: Crear credencial GCP temporal
+      - name: Create temporary GCP credential
         run: |
           echo '${{ secrets.GCP_SA_KEY }}' > gcp-key.json
 
-      - name: Configurar dbt profiles dinámico
+      - name: Configure dynamic dbt profiles
         run: |
           mkdir -p ~/.dbt
           cat << EOF > ~/.dbt/profiles.yml
@@ -44,16 +44,16 @@ jobs:
                 keyfile: $(pwd)/gcp-key.json
           EOF
 
-      - name: Ejecutar Capa de Transformación (dbt run)
+      - name: Execute Transformation Layer (dbt run)
         run: |
           dbt run --project-dir portfolio_finanzas
 
-      - name: Ejecutar Data Quality (dbt test)
+      - name: Execute Data Quality (dbt test)
         run: |
           dbt test --project-dir portfolio_finanzas
 
-      - name: Ejecutar Motor Cuantitativo (Python)
+      - name: Execute Quantitative Engine (Python)
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
-          python analytics/modelos_cuantitativos.py
+          python analytics/quant_models.py
