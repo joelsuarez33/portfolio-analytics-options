@@ -170,7 +170,7 @@ with tab1:
             
             # Synthetic Arbitrage (APR Monitoring)
             if not calls.empty and not puts.empty:
-                merged = pd.merge(calls, puts, on='strike', suffixes='_c', suffixes_y='_p')
+                merged = pd.merge(calls, puts, on='strike', suffixes=('_c', '_p'))
                 merged = merged[(merged['volume_c'] > 0) & (merged['volume_p'] > 0)].copy()
                 if not merged.empty:
                     merged['synthetic'] = merged['strike'] + merged['price_c'] - merged['price_p']
