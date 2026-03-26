@@ -20,6 +20,8 @@ This pipeline eliminates that. It captures, structures, and analyzes GGAL option
 
 🔗 **[portfolio-analytics-options.streamlit.app](https://portfolio-analytics-options.streamlit.app/)**
 
+<img width="943" height="476" alt="image" src="https://github.com/user-attachments/assets/4863453b-64ce-442b-95df-dfc5d2f5ad4b" />
+
 ---
 
 ## Architecture
