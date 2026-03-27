@@ -31,7 +31,7 @@ jobs:
         run: |
           mkdir -p ~/.dbt
           cat << EOF > ~/.dbt/profiles.yml
-          portfolio_finanzas:
+          portfolio_finance:
             target: dev
             outputs:
               dev:
@@ -46,11 +46,11 @@ jobs:
 
       - name: Execute Transformation Layer (dbt run)
         run: |
-          dbt run --project-dir portfolio_finanzas
+          dbt run --project-dir portfolio_finance
 
       - name: Execute Data Quality (dbt test)
         run: |
-          dbt test --project-dir portfolio_finanzas
+          dbt test --project-dir portfolio_finance
 
       - name: Execute Quantitative Engine (Python)
         env:
